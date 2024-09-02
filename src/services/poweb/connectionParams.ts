@@ -14,11 +14,12 @@ export default async function registerRoutes(
 ): Promise<void> {
   registerDisallowedMethods(['HEAD', 'GET'], ENDPOINT_URL, fastify);
 
+  const gatewayManager = await InternetGatewayManager.init(fastify.mongoose);
+
   fastify.route({
     method: ['HEAD', 'GET'],
     url: ENDPOINT_URL,
     async handler(_req, reply): Promise<void> {
-      const gatewayManager = await InternetGatewayManager.init(fastify.mongoose);
       const gateway = await gatewayManager.getCurrent();
       const params = new NodeConnectionParams(
         options.internetAddress,
